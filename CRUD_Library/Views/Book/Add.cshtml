@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model Book
+
+<h1>Add Book</h1>
+
+<form asp-controller="Book" asp-action="Add" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class= "form-group">
+        <label asp-for="Title">Title</label>
+        <input asp-for ="Title" class="form-control"/>
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ImageUrl">ImageUrl</label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description">Description</label>
+        <textarea class="form-control" asp-for="Description" rows="10"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <button class="btn btn-outline-primary w-25 mt-2">Add</button>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}
+
+
+@* <form asp-controller="Book" asp-action="Add" method="post">
+    <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="Title" class="form-control" id="Title" placeholder="Title for book" />
+    </div>
+    <div class="form-group">
+        <label>ImageUrl</label>
+        <input type="text" name="ImageUrl" id="ImageUrl" class="form-control" placeholder="ImageUrl for book" />
+    </div>
+    <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" name="Description" id="Description" rows="10"></textarea>
+    </div>
+    <button class="btn btn-outline-primary w-25 mt-2">Add</button>
+</form> *@
