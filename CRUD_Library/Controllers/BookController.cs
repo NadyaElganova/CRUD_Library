@@ -1,5 +1,8 @@
-﻿using CRUD_Library.Models;
+﻿using CRUD_Library.Helpers;
+using CRUD_Library.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRUD_Library.Controllers
 {
@@ -11,30 +14,42 @@ namespace CRUD_Library.Controllers
         {
             _context = context;
         }
+
+        [HttpGet]
         public IActionResult Index()
         {
-            var books = _context.Books;
+            var books = _context.Books.Include(b=>b.Category).ToList();
             return View(books);
         }
 
         [HttpGet]
         public IActionResult Add()
         {
-            return View();
+            var categories = _context.Categories;
+            return View(categories);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Add(Book book)
+        [HttpPost]        
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add(Book book, IFormFile Image, int categoryId)
         {
-            if(ModelState.IsValid)
+            // if(ModelState.IsValid)
+            // {
+            book.ImageUrl = await FileUploadHelper.UploadAsync(Image);
+            if(book.ImageUrl != null)
             {
                 TempData["status"] = "New book added!";
+                book.Category = await _context.Categories.FirstOrDefaultAsync(c=>c.Id==categoryId);
                 book.Date = DateTime.Now;
                 await _context.Books.AddAsync(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+
+            // }
             return View(book);
         }
+
+
     }
 }

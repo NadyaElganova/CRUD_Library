@@ -6,10 +6,11 @@
 
 @if (TempData.ContainsKey("status"))
 {
+
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Message!!</strong> @TempData["status"]
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
-    </div> 
+        <strong>Messages!</strong>@TempData["status"].
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 
@@ -23,6 +24,7 @@
             <div class="card-body">
                 <h5 class="card-title">@item.Title</h5>
                 <p class="card-text">@item.Description</p>
+                <p class="card-text">@item.Category.Name</p>
                 <span>@item.Date</span>
                 @*  <a href="#" class="btn btn-primary">Go somewhere</a> *@
             </div>

@@ -1,27 +1,44 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model Book
+
+@model IEnumerable<Category>
 
 <h1>Add Book</h1>
 
-<form asp-controller="Book" asp-action="Add" method="post">
+<form asp-controller="Book" asp-action="Add" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <div class= "form-group">
-        <label asp-for="Title">Title</label>
-        <input asp-for ="Title" class="form-control"/>
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
+
     <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="Title" class="form-control" id="Title" placeholder="Title for book" />
+    </div>
+@*     <div class="form-group">
         <label asp-for="ImageUrl">ImageUrl</label>
-        <input asp-for="ImageUrl" class="form-control" />
+        <input type="file" asp-for="ImageUrl" class="form-control" />
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>
+    </div> *@
+
     <div class="form-group">
-        <label asp-for="Description">Description</label>
-        <textarea class="form-control" asp-for="Description" rows="10"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
+        <label>Genre</label>
+        <select name="CategoryId" class="form-select" aria-label="Default select example">
+            @foreach (Category item in @Model)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
     </div>
+
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Default file input example</label>
+        <input class="form-control" type="file" name="Image">
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" name="Description" id="Description" rows="10"></textarea>
+    </div>
+
     <button class="btn btn-outline-primary w-25 mt-2">Add</button>
 </form>
 
