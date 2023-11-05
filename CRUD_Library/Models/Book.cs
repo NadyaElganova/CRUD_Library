@@ -22,5 +22,6 @@ namespace CRUD_Library.Models
         public string ImageUrl { get; set; }
 
         public Category Category { get; set; }
+        public IEnumerable<BookReader> BookReaders { get; set; }
     }
 }
