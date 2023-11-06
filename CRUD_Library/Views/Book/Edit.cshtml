@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "Edit";
+}
+@model Book
+
+<h1>Edit</h1>
+
+@if(Model!=null)
+{
+    <form asp-controller="Post" asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Category">Genre</label>
+            <select name="categories" asp-items="ViewBag.categories"
+                    class="form-select" aria-label="Default select example"></select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="BookReaders"></label>
+            <select name="readers" asp-items="ViewBag.readers"
+                    multiple class="form-select chosen-select"
+                    aria-label="Default select example"></select>
+        </div>
+
+        <img src="@Model.ImageUrl" height="200">
+
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Image</label>
+            <input class="form-control" name="Image" type="file" id="formFile">
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control" rows="10"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-outline-primary w-25 mt-2">Save</button>
+    </form>
+
+}
+else
+{
+    <h1>Edit</h1>
+}
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+
+    <script src="https://cdn.tiny.cloud/1/g9zqwp7tm78tvvxftg4se9v6vhuujkn4dh5xzh6kfr7kxcg6/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+        $(".chosen-select").chosen({ no_results_text: "Oops, nothing found!" });
+
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+    </script>
+
+}

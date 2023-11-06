@@ -9,6 +9,8 @@
 <form asp-controller="Book" asp-action="Add" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
 
+    <input name="ImageUrl" asp-for="ImageUrl" hidden/>
+
     <div class="form-group">
         <label asp-for="Title"></label>
         <input asp-for="Title" class="form-control" />

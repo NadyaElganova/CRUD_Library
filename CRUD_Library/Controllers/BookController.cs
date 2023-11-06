@@ -1,4 +1,5 @@
-﻿using CRUD_Library.Helpers;
+﻿using CRUD_Library.Extensions;
+using CRUD_Library.Helpers;
 using CRUD_Library.Models;
 using CRUD_Library.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +22,7 @@ namespace CRUD_Library.Controllers
         public IActionResult Index()
         {
             
-            var books = _context.Books.Include(b=>b.Category).ToList();
+            var books = _context.Books.Include(b=>b.Category).Include(x=>x.BookReaders).ThenInclude(x=>x.Reader);
             var categories = _context.Categories;
             var readers = _context.Readers;
 
@@ -36,7 +37,6 @@ namespace CRUD_Library.Controllers
         public IActionResult Add()
         {
             //ViewBag.categories = blogDbContext.Categories;
-
             ViewBag.categories = new SelectList(_context.Categories, "Id", "Name");
             ViewBag.readers = new MultiSelectList(_context.Readers, "Id", "FIO");
             return View();
@@ -76,6 +76,46 @@ namespace CRUD_Library.Controllers
             return View(book);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+       
+            var book = await _context.Books.
+                Include(x=>x.Category).
+                Include(p=>p.BookReaders).ThenInclude(x=>x.Reader).
+                FirstOrDefaultAsync(c => c.Id == id);
+
+            var selectedCategory = _context.Categories.FirstOrDefault(x => x.Id == book.Category.Id);
+            ViewBag.categories = new SelectList(_context.Categories, "Id", "Name", selectedCategory.Id);
+
+            var selectedReaders = _context.BookReaders.Where(x => x.BookId == id).Select(x=>x.ReaderId);
+            ViewBag.readers = new MultiSelectList(_context.Readers, "Id", "FIO", selectedReaders);
+
+            return View(book);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Book book, IFormFile Image, int[] readers)
+        {
+            if(Image!=null)
+            {
+                var path = await FileUploadHelper.UploadAsync(Image);
+                book.ImageUrl = path;
+            }
+
+            book.Date = DateTime.Now;
+
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
+
+            _context.UpdateManyToMany();
+            //var deleteBookReader = _context.BookReaders.Where(b => b.BookId == book.Id);
+            //_context.BookReaders.RemoveRange(deleteBookReader);
+
+            return RedirectToAction("Index");
+            
+        }
 
     }
 }
