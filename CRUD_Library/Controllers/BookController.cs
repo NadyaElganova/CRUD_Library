@@ -61,6 +61,8 @@ namespace CRUD_Library.Controllers
                 _context.BookReaders.AddRange(readers.Select(br =>  new BookReader()  {BookId = book.Id, ReaderId = br }));
                 await _context.SaveChangesAsync();
 
+                
+
                 //var readersCollection = _context.BookReaders;
                 //for (int i = 0; i < readers.Count(); i++)
                 //{
@@ -94,24 +96,50 @@ namespace CRUD_Library.Controllers
             return View(book);
         }
 
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var books = _context.Books
+                .Include(x => x.BookReaders).ThenInclude(x => x.Reader)
+                .Include(x => x.Category)
+                .FirstOrDefault(books => books.Id == id);
+            return View(books);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Book book, IFormFile Image, int[] readers)
+        public async Task<IActionResult> EditSave(Book book, IFormFile Image, int[] categories, int[] readers)
         {
             if(Image!=null)
             {
                 var path = await FileUploadHelper.UploadAsync(Image);
                 book.ImageUrl = path;
             }
-
+                        
             book.Date = DateTime.Now;
+            book.Category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categories[0]);
 
+            //_context.Attach(book).State = EntityState.Modified;
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
 
-            _context.UpdateManyToMany();
-            //var deleteBookReader = _context.BookReaders.Where(b => b.BookId == book.Id);
-            //_context.BookReaders.RemoveRange(deleteBookReader);
+            var bookWithTags = _context.Books.Include(x => x.BookReaders).FirstOrDefault(x => x.Id == book.Id);
+
+            _context.UpdateManyToMany(
+                bookWithTags.BookReaders,
+                readers.Select(x => new BookReader { ReaderId = x, BookId = book.Id }),
+                x => x.ReaderId
+                );
+            await _context.SaveChangesAsync();
+
+            //--var deleteBookReader = _context.BookReaders.Where(b => b.BookId == book.Id);
+            //--_context.BookReaders.RemoveRange(deleteBookReader);
+            //blogDbContext.UpdateManyToMany();
+            //var deletePostTag = blogDbContext.PostTags.Where(x => x.PostId == post.Id);
+            //blogDbContext.PostTags.RemoveRange(deletePostTag);
+            //blogDbContext.PostTags.AddRange(tags.Select(x => new PostTag { PostId = post.Id, TagId = x }));
+            //await blogDbContext.SaveChangesAsync();
+
 
             return RedirectToAction("Index");
             

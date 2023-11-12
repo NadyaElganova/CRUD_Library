@@ -1,56 +1,51 @@
-﻿
-@{
-    ViewData["Title"] = "Edit";
+﻿﻿@{
+    ViewData["Title"] = "Home Page";
 }
+
 @model Book
 
 <h1>Edit</h1>
 
-@if(Model!=null)
-{
-    <form asp-controller="Post" asp-action="Edit" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="All" class="text-danger"></div>
+<form asp-controller="Book" asp-action="EditSave" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
 
-        <div class="form-group">
-            <label asp-for="Title"></label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
+    <input name="Id" asp-for="Id" hidden />
+    <input name="ImageUrl" asp-for="ImageUrl" hidden />
 
-        <div class="form-group">
-            <label asp-for="Category">Genre</label>
-            <select name="categories" asp-items="ViewBag.categories"
-                    class="form-select" aria-label="Default select example"></select>
-        </div>
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
 
-        <div class="form-group">
-            <label asp-for="BookReaders"></label>
-            <select name="readers" asp-items="ViewBag.readers"
-                    multiple class="form-select chosen-select"
-                    aria-label="Default select example"></select>
-        </div>
+    <div class="form-group">
+        <label asp-for="Category">Genre</label>
+        <select name="categories" asp-items="ViewBag.categories"
+                class="form-select" aria-label="Default select example"></select>
+    </div>
 
-        <img src="@Model.ImageUrl" height="200">
+    <div class="form-group">
+        <label asp-for="BookReaders"></label>
+        <select name="readers" asp-items="ViewBag.readers"
+                multiple class="form-select chosen-select"
+                aria-label="Default select example"></select>
+    </div>
 
-        <div class="mb-3">
-            <label for="formFile" class="form-label">Image</label>
-            <input class="form-control" name="Image" type="file" id="formFile">
-        </div>
+    <img src="@Model.ImageUrl" height="200" />
 
-        <div class="form-group">
-            <label asp-for="Description"></label>
-            <textarea asp-for="Description" class="form-control" rows="10"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Image</label>
+        <input class="form-control" name="Image" type="file" id="formFile">
+    </div>
 
-        <button class="btn btn-outline-primary w-25 mt-2">Save</button>
-    </form>
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control" rows="10"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
 
-}
-else
-{
-    <h1>Edit</h1>
-}
+    <button class="btn btn-outline-primary w-25 mt-2">Save</button>
+</form>
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial"></partial>
