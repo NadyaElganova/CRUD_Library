@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace CRUD_Library.Controllers
 {
@@ -19,17 +20,34 @@ namespace CRUD_Library.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int? categoryId = null, int? readerId = null, int page=1)
         {
-            
-            var books = _context.Books.Include(b=>b.Category).Include(x=>x.BookReaders).ThenInclude(x=>x.Reader);
+            var books = _context.Books.Include(b => b.BookReaders).ThenInclude(x => x.Reader).Include(x => x.Category).OrderByDescending(x => x.Id);
             var categories = _context.Categories;
             var readers = _context.Readers;
+
+            if (categoryId != null)
+            {
+                books = (IOrderedQueryable<Book>)books.Where(x => x.Category.Id == categoryId);
+            }
+            if (readerId != null)
+            {
+                //var postIdsByTag = blogDbContext.PostTags.Where(pt => pt.TagId == tagId).Select(x=>x.PostId);
+                //posts = (IOrderedQueryable<Post>)posts.Where(p =>postIdsByTag.Contains(p.Id));
+
+                books = (IOrderedQueryable<Book>)books.Where(x => x.BookReaders.Any(x => x.ReaderId == readerId));
+            }
 
             var model = new IndexViewModel();
             model.Books = books;
             model.Categories = categories;
             model.Readers = readers;
+            model.RecentBook = _context.Books.OrderByDescending(b => b.Id).Take(3);
+            model.CurrentPages = page;
+            model.TotalPages = 10;
+            model.SelectedReadersId = readerId;
+            model.SelectedCategoryId = categoryId;
+
             return View(model);
         }
 
@@ -145,5 +163,25 @@ namespace CRUD_Library.Controllers
             
         }
 
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+
+            var book = _context.Books.Find(id);
+            return View(book);
+        }
+
+
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> ConfirmDelete(int id)
+        {
+
+            var book = _context.Books.Find(id);
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+            TempData["status"] = "Book DELETED!";
+            return RedirectToAction("Index");
+        }
     }
 }

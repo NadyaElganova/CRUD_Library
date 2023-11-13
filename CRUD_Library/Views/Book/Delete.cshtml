@@ -1,0 +1,22 @@
+﻿﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model Book
+
+<h1>Delete</h1>
+
+
+<h1>Are you sure you want to delete ?</h1>
+
+
+<div class="row">
+    <div class="col-4">
+        <a asp-action="Index" asp-controller="Book" class="btn btn-danger w-100">Cancel</a>
+    </div>
+    <div class="col-4">
+        <form asp-action="Delete" asp-controller="Book" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button class="btn btn-success w-100">Yes</button>
+        </form>
+    </div>
+</div>
