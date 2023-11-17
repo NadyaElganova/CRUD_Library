@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System.Configuration;
 
 namespace CRUD_Library.Controllers
 {
@@ -39,13 +40,17 @@ namespace CRUD_Library.Controllers
             }
 
             var model = new IndexViewModel();
+
+            int totalP = (int)Math.Ceiling(books.Count() / (double)model.LimitPage);
+            books = (IOrderedQueryable<Book>)books.Skip((page - 1) * model.LimitPage).Take(model.LimitPage);
+
             model.Books = books;
             model.Categories = categories;
             model.Readers = readers;
-            model.RecentBook = _context.Books.OrderByDescending(b => b.Id).Take(3);
+            model.RecentBook = _context.Books.OrderByDescending(b => b.Id).Take(model.LimitPage);
             model.CurrentPages = page;
-            model.TotalPages = 10;
-            model.SelectedReadersId = readerId;
+            model.TotalPages = totalP;
+            model.SelectedReaderId = readerId;
             model.SelectedCategoryId = categoryId;
 
             return View(model);

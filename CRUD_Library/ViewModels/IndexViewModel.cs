@@ -10,9 +10,9 @@ namespace CRUD_Library.ViewModels
         public IEnumerable<Book> RecentBook { get; set; }
         public int CurrentPages { get; set; }
         public int? SelectedCategoryId { get; set; }
-        public int? SelectedReadersId { get; set; }
+        public int? SelectedReaderId { get; set; }
         public int TotalPages { get; set; }
-        public int LimitPage { get; set; }
+        public int LimitPage { get; set; } = 2;
 
     }
 }

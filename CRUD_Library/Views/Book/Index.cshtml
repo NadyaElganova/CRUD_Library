@@ -1,8 +1,20 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home Page";
 }
 
+
+
 @model IndexViewModel
+
+@*@await Component.InvokeAsync("Pagination",new { currentPages = 1}) *@
+<vc:pagination current-page="@Model.CurrentPages"
+               total-pages="@Model.TotalPages"
+               limit="@Model.LimitPage"
+               reader-id="@Model.SelectedReaderId"
+               category-id="@Model.SelectedCategoryId"
+               action="Index"
+               controller="Book"></vc:pagination>
 
 <div classs="row">
 
@@ -17,7 +29,7 @@
                 {
                     foreach (var item in Model.Categories)
                     {
-                        <a asp-action="Index" asp-controller="Book" asp-route-categoryId="@item.Id" asp-route-readerId="@Model.SelectedReadersId" class="list-group-item list-group-item-action @(Model.SelectedCategoryId==item.Id ? "active" : ' ') ">@item.Name</a>
+                        <a asp-action="Index" asp-controller="Book" asp-route-categoryId="@item.Id" asp-route-readerId="@Model.SelectedReaderId" class="list-group-item list-group-item-action @(Model.SelectedCategoryId==item.Id ? "active" : ' ') ">@item.Name</a>
                     }
                 }
 
@@ -32,7 +44,7 @@
                 {
                     foreach (var item in Model.Readers)
                     {
-                        <a asp-action="Index" asp-controller="Book" asp-route-readerId="@item.Id" asp-route-categoryId="@Model.SelectedCategoryId" class="list-group-item list-group-item-action @(Model.SelectedReadersId==item.Id ? "active" : ' ') ">@item.FIO</a>
+                        <a asp-action="Index" asp-controller="Book" asp-route-readerId="@item.Id" asp-route-categoryId="@Model.SelectedCategoryId" class="list-group-item list-group-item-action @(Model.SelectedReaderId==item.Id ? "active" : ' ') ">@item.FIO</a>
                     }
                 }
             </div>
