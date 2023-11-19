@@ -155,15 +155,6 @@ namespace CRUD_Library.Controllers
                 );
             await _context.SaveChangesAsync();
 
-            //--var deleteBookReader = _context.BookReaders.Where(b => b.BookId == book.Id);
-            //--_context.BookReaders.RemoveRange(deleteBookReader);
-            //blogDbContext.UpdateManyToMany();
-            //var deletePostTag = blogDbContext.PostTags.Where(x => x.PostId == post.Id);
-            //blogDbContext.PostTags.RemoveRange(deletePostTag);
-            //blogDbContext.PostTags.AddRange(tags.Select(x => new PostTag { PostId = post.Id, TagId = x }));
-            //await blogDbContext.SaveChangesAsync();
-
-
             return RedirectToAction("Index");
             
         }
