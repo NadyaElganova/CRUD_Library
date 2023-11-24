@@ -1,4 +1,6 @@
+using CRUD_Library.Meddleware;
 using CRUD_Library.Models;
+using CRUD_Library.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -10,9 +12,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options=>
 options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserManager, UserManager>();
 var app = builder.Build();
-
 
 BookDbInitializer.seed(app);
 
@@ -28,6 +30,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseMiddleware<KeyMiddleware>();
+
 
 app.UseAuthorization();
 

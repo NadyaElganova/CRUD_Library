@@ -20,20 +20,11 @@ namespace CRUD_Library.Areas.Admin.Controllers
         }
 
         // GET: HomeController
-        public ActionResult Index(int? categoryId = null, int? readerId = null, int page = 1)
+        public ActionResult Index(int page = 1)
         {
             var books = _context.Books.Include(b => b.BookReaders).ThenInclude(x => x.Reader).Include(x => x.Category).OrderByDescending(x => x.Id);
             var categories = _context.Categories;
             var readers = _context.Readers;
-
-            if (categoryId != null)
-            {
-                books = (IOrderedQueryable<Book>)books.Where(x => x.Category.Id == categoryId);
-            }
-            if (readerId != null)
-            {
-                books = (IOrderedQueryable<Book>)books.Where(x => x.BookReaders.Any(x => x.ReaderId == readerId));
-            }
 
             var model = new IndexViewModel();
 
@@ -46,8 +37,6 @@ namespace CRUD_Library.Areas.Admin.Controllers
             model.RecentBook = _context.Books.OrderByDescending(b => b.Id).Take(model.LimitPage);
             model.CurrentPages = page;
             model.TotalPages = totalP;
-            model.SelectedReaderId = readerId;
-            model.SelectedCategoryId = categoryId;
 
             return View(model);
         }
@@ -62,27 +51,36 @@ namespace CRUD_Library.Areas.Admin.Controllers
             return View(books);
         }
 
-        // GET: HomeController/Create
-        public ActionResult Create()
+        [HttpGet]
+        public IActionResult Add()
         {
+            ViewBag.categories = new SelectList(_context.Categories, "Id", "Name");
+            ViewBag.readers = new MultiSelectList(_context.Readers, "Id", "FIO");
             return View();
         }
 
-        // POST: HomeController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Add(Book book, IFormFile Image, int[] categories, int[] readers)
         {
-            try
+            book.ImageUrl = await FileUploadHelper.UploadAsync(Image);
+            if (book.ImageUrl != null)
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                TempData["status"] = "New book added!";
+                book.Category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categories[0]);
+                book.Date = DateTime.Now;
 
+                await _context.Books.AddAsync(book);
+                await _context.SaveChangesAsync();
+
+                _context.BookReaders.AddRange(readers.Select(br => new BookReader() { BookId = book.Id, ReaderId = br }));
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(book);
+        }
         // GET: HomeController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
@@ -104,7 +102,7 @@ namespace CRUD_Library.Areas.Admin.Controllers
         // POST: HomeController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Book book, IFormFile Image, int[] categories, int[] readers)
+        public async Task<IActionResult> EditSave(Book book, IFormFile Image, int[] categories, int[] readers)
         {
             if (Image != null)
             {

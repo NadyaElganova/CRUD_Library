@@ -3,27 +3,16 @@
     ViewData["Title"] = "Home Page";
 }
 
-
-
 @model IndexViewModel
 
-@*@await Component.InvokeAsync("Pagination",new { currentPages = 1}) *@
-<vc:pagination current-page="@Model.CurrentPages"
-               total-pages="@Model.TotalPages"
-               limit="@Model.LimitPage"
-               reader-id="@Model.SelectedReaderId"
-               category-id="@Model.SelectedCategoryId"
-               action="Index"
-               controller="Book"></vc:pagination>
-
-<div classs="row">
+<div class="row">
 
     <div class="col-2">
         <div class="row">
             <a asp-controller="Book" asp-action="Index" class="btn btn-outline-info">Reset</a>
             <hr />
             <h3>Categories</h3>
-            <hr/>
+            <hr />
             <div class="list-group">
                 @if (Model.Categories != null)
                 {
@@ -32,13 +21,12 @@
                         <a asp-action="Index" asp-controller="Book" asp-route-categoryId="@item.Id" asp-route-readerId="@Model.SelectedReaderId" class="list-group-item list-group-item-action @(Model.SelectedCategoryId==item.Id ? "active" : ' ') ">@item.Name</a>
                     }
                 }
-
             </div>
         </div>
 
         <div class="row">
-            <h3>Readers</h3>
-            <hr/>
+            <h3>Tags</h3>
+            <hr />
             <div class="list-group">
                 @if (Model.Readers != null)
                 {
@@ -48,11 +36,10 @@
                     }
                 }
             </div>
+        </div>
     </div>
-    </div>
-
     <div class="col-10">
-        @if (TempData.ContainsKey("status"))
+         @if (TempData.ContainsKey("status"))
         {
 
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -61,49 +48,52 @@
             </div>
         }
 
-
         @if (Model.Books != null && Model.Books.Count() > 0)
         {
             <div class="row">
                 @foreach (var item in Model.Books)
                 {
+
+
                     <div class="card col-4" style="width: 18rem;">
-                        <img class="card-img-top" src="@item.ImageUrl" alt="Card image cap">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">@item.Title</h5>
-                            <hr/>
-                            @if (item.BookReaders.Count() < 0){
+                            <hr />
+                            @if (item.BookReaders.Count() < 0)
+                            {
                                 <span class="badge bg-danger rounded-pill">None</span>
                             }
                             else
                             {
                                 @foreach (var reader in item.BookReaders)
-                            {
-                                <span class="badge bg-primary rounded-pill">@reader.Reader.FIO</span>
+                                {
+                                    <span class="badge bg-primary rounded-pill">@reader.Reader.FIO</span>
+                                }
                             }
-                            }
-                            <hr/>
+                            <hr />
                             <strong class="card-text">@item.Category.Name</strong>
                             <p class="card-text">@Html.Raw(@item.Description)</p>
                             <span>@item.Date</span>
 
                             <br />
-                            <a asp-action="Details" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
-                            <a asp-action="Edit" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                            <a asp-action="Delete" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Delete</a>
+                            <a asp-action="Details" asp-controller="Book" asp-route-id="@item.Id" class="btn btn-primary">Read</a>
                         </div>
                     </div>
                 }
             </div>
+            <vc:pagination current-page="@Model.CurrentPages"
+                           total-pages="@Model.TotalPages"
+                           limit="@Model.LimitPage"
+                           reader-id="@Model.SelectedReaderId"
+                           category-id="@Model.SelectedCategoryId"
+                           action="Index"
+                           controller="Book"></vc:pagination>
         }
-        else if(@Model.Books.Count()==0)
+        else if (@Model.Books.Count() == 0)
         {
-            <h3>Not found!!!</h3>
+            <h3>Not found</h3>
         }
     </div>
-
 </div>
-
-
-
 

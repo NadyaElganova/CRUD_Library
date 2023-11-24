@@ -1,16 +1,15 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
 @model Book
 
-<h1>Add Book</h1>
+<h1 class="text-center">Add Book</h1>
 
-<form asp-controller="Book" asp-action="Add" method="post" enctype="multipart/form-data">
+<form asp-controller="Home" asp-action="Add" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <input name="ImageUrl" asp-for="ImageUrl" hidden/>
+    <input name="ImageUrl" asp-for="ImageUrl" hidden />
 
     <div class="form-group">
         <label asp-for="Title"></label>
@@ -20,17 +19,17 @@
 
     <div class="form-group">
         <label asp-for="Category">Genre</label>
-        <select name="categories" asp-items="ViewBag.categories" 
-        class="form-select" aria-label="Default select example"></select>
+        <select name="categories" asp-items="ViewBag.categories"
+                class="form-select" aria-label="Default select example"></select>
     </div>
 
     <div class="form-group">
         <label asp-for="BookReaders"></label>
-        <select name="readers" asp-items="ViewBag.readers" 
-        multiple class="form-select chosen-select"
+        <select name="readers" asp-items="ViewBag.readers"
+                multiple class="form-select chosen-select"
                 aria-label="Default select example"></select>
     </div>
-        
+
     <div class="mb-3">
         <label for="formFile" class="form-label">Image</label>
         <input class="form-control" name="Image" type="file" id="formFile">
@@ -44,6 +43,7 @@
 
     <button class="btn btn-outline-primary w-25 mt-2">Add</button>
 </form>
+
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial"></partial>
@@ -59,5 +59,4 @@
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
         });
     </script>
-
 }

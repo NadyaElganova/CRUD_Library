@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+@model LoginViewModel
+
+<h1>Вход</h1>
+
+
+<form method="post" asp-controller="Auth" asp-action="Login">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Login">Login</label>
+        <input asp-for="Login" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+        <span asp-validation-for="Login" class="form-text text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password">Password</label>
+        <input asp-for="Password" class="form-control" placeholder="Password">
+        <span asp-validation-for="Password" class="form-text text-danger"></span>
+    </div>
+   
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}

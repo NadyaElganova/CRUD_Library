@@ -11,5 +11,6 @@ namespace CRUD_Library.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<Reader> Readers { get; set; }
         public DbSet<BookReader> BookReaders { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
