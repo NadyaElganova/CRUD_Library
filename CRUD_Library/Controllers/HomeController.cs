@@ -16,7 +16,11 @@ namespace CRUD_Library.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                ViewBag.Error = "Недостаточно прав для доступа.";
+            }
+                return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -2,6 +2,7 @@
 using CRUD_Library.Helpers;
 using CRUD_Library.Models;
 using CRUD_Library.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using System.Configuration;
 
 namespace CRUD_Library.Controllers
 {
+    [Authorize(Roles = "User")]
     public class BookController: Controller
     {
         private readonly AppDbContext _context;
@@ -62,7 +64,6 @@ namespace CRUD_Library.Controllers
                 .FirstOrDefault(books => books.Id == id);
             return View(books);
         }
-
-       
+        
     }
 }

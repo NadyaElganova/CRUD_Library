@@ -6,13 +6,14 @@ namespace CRUD_Library.ViewModels
     {
         [Required]
         [MinLength(1)]
-        [MaxLength(20)]
+        [MaxLength(30)]
         public string Login { get; set; }
         [Required]
-        [MinLength(1)]
+        [MinLength(3)]
         [MaxLength(10)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
 
     }
 }

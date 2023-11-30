@@ -82,13 +82,6 @@
                     </div>
                 }
             </div>
-            <vc:pagination current-page="@Model.CurrentPages"
-                           total-pages="@Model.TotalPages"
-                           limit="@Model.LimitPage"
-                           reader-id="@Model.SelectedReaderId"
-                           category-id="@Model.SelectedCategoryId"
-                           action="Index"
-                           controller="Book"></vc:pagination>
         }
         else if (@Model.Books.Count() == 0)
         {
@@ -96,4 +89,12 @@
         }
     </div>
 </div>
+
+<vc:pagination current-page="@Model.CurrentPages"
+               total-pages="@Model.TotalPages"
+               limit="@Model.LimitPage"
+               reader-id="@Model.SelectedReaderId"
+               category-id="@Model.SelectedCategoryId"
+               action="Index"
+               controller="Book"></vc:pagination>
 

@@ -3,4 +3,10 @@
 }
 <h1>@ViewData["Title"]</h1>
 
+@if (ViewBag.Error!=null)
+{
+    <h1 class="text-danger">@ViewBag.Error</h1>
+}
+
 <p>Use this page to detail your site's privacy policy.</p>
+

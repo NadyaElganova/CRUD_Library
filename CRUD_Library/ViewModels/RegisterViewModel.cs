@@ -6,7 +6,7 @@ namespace CRUD_Library.ViewModels
     {
         [Required]
         [MinLength(1)]
-        [MaxLength(20)]
+        [MaxLength(30)]
         public string Login { get; set; }
         [Required]
         [MinLength(1)]
