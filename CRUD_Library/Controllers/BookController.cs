@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Configuration;
+using System.Security.Claims;
 
 namespace CRUD_Library.Controllers
 {
@@ -58,11 +59,26 @@ namespace CRUD_Library.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var books = _context.Books
+            Book book = _context.Books
                 .Include(x => x.BookReaders).ThenInclude(x => x.Reader)
                 .Include(x => x.Category)
                 .FirstOrDefault(books => books.Id == id);
-            return View(books);
+            var detailVM = new DetailViewModel();
+            detailVM.Book = book;
+
+            ClaimsPrincipal claimUser = HttpContext.User;
+
+            // Получение номера id пользователя
+            var idClaim = claimUser.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = idClaim != null ? idClaim.Value : null;
+
+            // Получение имени пользователя
+            var nameClaim = claimUser.FindFirst(ClaimTypes.Name);
+            var userName = nameClaim != null ? nameClaim.Value : null;
+            detailVM.User = _context.Users.FirstOrDefault(u=> u.Login==userName);
+
+
+            return View(detailVM);
         }
         
     }

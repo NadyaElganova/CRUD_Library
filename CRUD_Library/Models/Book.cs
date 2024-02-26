@@ -23,5 +23,6 @@ namespace CRUD_Library.Models
 
         public Category Category { get; set; }
         public IEnumerable<BookReader> BookReaders { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
     }
 }

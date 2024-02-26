@@ -8,6 +8,7 @@ namespace CRUD_Library.ViewModels
         public IEnumerable<Category> Categories { get; set;}
         public IEnumerable<Reader> Readers { get; set; }
         public IEnumerable<Book> RecentBook { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
         public int CurrentPages { get; set; }
         public int? SelectedCategoryId { get; set; }
         public int? SelectedReaderId { get; set; }
