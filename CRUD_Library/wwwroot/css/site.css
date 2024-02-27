@@ -25,3 +25,11 @@ body {
     width: 300px;
     height: 400px;
 }
+
+.link-grey {
+    color: #aaa;
+}
+
+.link-grey:hover {
+        color: #00913b;
+}

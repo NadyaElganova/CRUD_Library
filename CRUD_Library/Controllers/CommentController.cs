@@ -2,6 +2,8 @@
 using CRUD_Library.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 
 namespace CRUD_Library.Controllers
 {
@@ -28,10 +30,16 @@ namespace CRUD_Library.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Add(DetailViewModel detailViewModel)
+        public async Task<ActionResult> Add(Comment comment, int userId, int bookId, string text)
         {
+            comment.Text = text;
+            comment.Book = _context.Books.FirstOrDefault(b => b.Id == bookId);
+            comment.User = _context.Users.FirstOrDefault(u => u.Id == userId);
+            comment.Date = DateTime.Now;
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
 
-            return View();
+            return RedirectToAction("Details", "Book", new { id = bookId });
         }
 
         // GET: CommentsController/Edit/5

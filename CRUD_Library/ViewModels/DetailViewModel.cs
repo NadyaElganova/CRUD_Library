@@ -12,5 +12,6 @@ namespace CRUD_Library.ViewModels
         [MinLength(1)]
         public string? Text { get; set; }
         public DateTime Date { get; set; }
+        public IEnumerable<Comment> Comments { get; set; }
     }
 }

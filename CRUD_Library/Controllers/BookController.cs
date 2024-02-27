@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Configuration;
 using System.Security.Claims;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace CRUD_Library.Controllers
 {
@@ -65,6 +66,9 @@ namespace CRUD_Library.Controllers
                 .FirstOrDefault(books => books.Id == id);
             var detailVM = new DetailViewModel();
             detailVM.Book = book;
+
+            var comments = _context.Comments.Include(x=>x.Book).Include(x=>x.User);
+            detailVM.Comments = (IOrderedQueryable<Comment>)comments.Where(x => x.Book.Id == id);
 
             ClaimsPrincipal claimUser = HttpContext.User;
 
