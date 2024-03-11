@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CRUD_Library.Areas.Admin.Controllers
 {
@@ -46,11 +47,28 @@ namespace CRUD_Library.Areas.Admin.Controllers
         // GET: HomeController/Details/5
         public ActionResult Details(int id)
         {
-            var books = _context.Books
-                .Include(x => x.BookReaders).ThenInclude(x => x.Reader)
-                .Include(x => x.Category)
-                .FirstOrDefault(books => books.Id == id);
-            return View(books);
+            Book book = _context.Books
+               .Include(x => x.BookReaders).ThenInclude(x => x.Reader)
+               .Include(x => x.Category)
+               .FirstOrDefault(books => books.Id == id);
+            var detailVM = new DetailViewModel();
+            detailVM.Book = book;
+
+            var comments = _context.Comments
+                            .Include(x => x.Book)
+                            .Include(x => x.User)
+                            .Where(x => x.Book.Id == id)
+                            .OrderBy(x => x.Date);
+            detailVM.Comments = comments.ToList();
+
+            ClaimsPrincipal claimUser = HttpContext.User;
+
+            // Получение логина пользователя
+            var nameClaim = claimUser.FindFirst(ClaimTypes.Name);
+            var userName = nameClaim != null ? nameClaim.Value : null;
+            detailVM.User = _context.Users.FirstOrDefault(u => u.Login == userName);
+
+            return View("~/Views/Shared/Details.cshtml", detailVM);
         }
 
         [HttpGet]
@@ -151,5 +169,15 @@ namespace CRUD_Library.Areas.Admin.Controllers
             TempData["status"] = "Book DELETED!";
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteComment(int commentId, int bookId)
+        {
+            var comment = _context.Comments.Find(commentId);
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { id = bookId });
+        }
+
     }
 }

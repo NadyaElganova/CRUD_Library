@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Details";
 }
 
@@ -8,7 +7,7 @@
 <h1>Details</h1>
 
 <div class="card">
-    <img src="@Model.Book.ImageUrl" class="detail card-img-top" alt="...">
+    <img src="@Model.Book.ImageUrl" class="detail" alt="...">
     <div class="card-body">
         <h5 class="card-title">@Model.Book.Title</h5>
         <p class="card-text">@Model.Book.Category.Name</p>
@@ -22,7 +21,12 @@
     </ul>
     <div class="card-body">
         <span class="card-link">@Html.Raw(@Model.Book.Description)</span>
-        <a asp-action="Index" asp-controller="Book" class="btn btn-primary">Back</a>
+        @if (ViewContext.ActionDescriptor.RouteValues["area"] == "Admin"){
+            <a asp-controller="Home" asp-action="Index" asp-area="Admin" class="btn btn-primary">Back</a>
+        }
+        else{
+            <a asp-action="Index" asp-controller="Book" class="btn btn-primary">Back</a>
+        }
     </div>
 
     <section style="background-color: #f7f6f6;">
@@ -64,6 +68,16 @@
                                                         <a href="#!" class="link-grey">Share</a>
                                                     </p>
                                                     <div class="d-flex flex-row">
+                                                    @if (ViewContext.ActionDescriptor.RouteValues["area"] == "Admin")
+                                                    {
+                                                        <form asp-area="Admin" asp-controller="Home" asp-action="DeleteComment" method="post">
+                                                            <input type="hidden" name="commentId" value="@item.Id"/>
+                                                            <input type="hidden" name="bookId" value="@item.Book.Id" />
+                                                            <button type="submit" class="btn btn-outline-danger">
+                                                                <i class="fa-solid fa-trash-can"></i> Delete
+                                                            </button>
+                                                        </form>                                                        
+                                                    }
                                                         <i class="fas fa-star text-warning me-2"></i>
                                                         <i class="far fa-check-circle" style="color: #aaa;"></i>
                                                     </div>
@@ -74,9 +88,9 @@
                                 </div>
                         }
                     }
-
-                        <form asp-model="@Model" asp-controller="Comment" asp-action="Add" method="post" enctype="multipart/form-data">
-                            <div asp-validation-summary="All" class="text-danger"></div>                            
+                    @if (ViewContext.ActionDescriptor.RouteValues["area"] != "Admin")
+                    {
+                        <form asp-model="@Model" asp-controller="Comment" asp-action="Add" method="post" enctype="multipart/form-data">           
                                 <div class="d-flex flex-start w-100">
                                     <div class="form-outline w-100">
                                         <textarea placeholder="Comment" asp-for="Text" class="form-control" id="textAreaExample" rows="4"
@@ -87,10 +101,11 @@
                                 <input type="hidden" name="userId" value="@Model.User.Id" />
                                 <input type="hidden" name="bookId" value="@Model.Book.Id" />
                         <div class="float-end mt-2 pt-1">
-                            <button type="button" class="btn btn-primary btn-sm">Post comment</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
                             <button type="button" class="btn btn-outline-primary btn-sm">Cancel</button>
                         </div>
-                    </form>
+                        </form>
+                    }                    
 
                     </div>
                 </div>

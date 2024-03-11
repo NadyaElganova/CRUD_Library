@@ -16,26 +16,15 @@ namespace CRUD_Library.Controllers
             _context = context;
         }
 
-        public ActionResult Index()
-        {
-            var comments = _context.Comments;
-
-            return View();
-        }
-
-        // GET: CommentsController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Add(Comment comment, int userId, int bookId, string text)
         {
             comment.Text = text;
-            comment.Book = _context.Books.FirstOrDefault(b => b.Id == bookId);
-            comment.User = _context.Users.FirstOrDefault(u => u.Id == userId);
+            comment.Book = _context.Books.Find(bookId);
+            comment.User = _context.Users.Find(userId);
             comment.Date = DateTime.Now;
+
             _context.Comments.Add(comment);
             _context.SaveChanges();
 

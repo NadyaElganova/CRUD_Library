@@ -67,16 +67,16 @@ namespace CRUD_Library.Controllers
             var detailVM = new DetailViewModel();
             detailVM.Book = book;
 
-            var comments = _context.Comments.Include(x=>x.Book).Include(x=>x.User);
-            detailVM.Comments = (IOrderedQueryable<Comment>)comments.Where(x => x.Book.Id == id);
+            var comments = _context.Comments
+                            .Include(x => x.Book)
+                            .Include(x => x.User)
+                            .Where(x => x.Book.Id == id)
+                            .OrderBy(x => x.Date);
+            detailVM.Comments = comments.ToList();
 
             ClaimsPrincipal claimUser = HttpContext.User;
 
-            // Получение номера id пользователя
-            var idClaim = claimUser.FindFirst(ClaimTypes.NameIdentifier);
-            var userId = idClaim != null ? idClaim.Value : null;
-
-            // Получение имени пользователя
+            // Получение логина пользователя
             var nameClaim = claimUser.FindFirst(ClaimTypes.Name);
             var userName = nameClaim != null ? nameClaim.Value : null;
             detailVM.User = _context.Users.FirstOrDefault(u=> u.Login==userName);
